@@ -45,7 +45,7 @@ body{background:var(--gy1);font-family:var(--font)}
 .du-tag{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--gy6)}
 .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
 .dot-s{background:var(--bl3)}
-.dot-v{background:var(--sk3);outline:1.5px solid #00A5DB}
+.dot-v{background:var(--sk3)}
 .dot-c{background:var(--or5)}
 .dot-r{background:var(--vi5)}
 .dot-b{background:var(--gr5)}
@@ -70,7 +70,8 @@ body{background:var(--gy1);font-family:var(--font)}
 .card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:18px 16px 14px 16px;display:flex;flex-direction:column;min-width:0;overflow:hidden;transition:box-shadow .2s,border-color .2s}
 
 /* ── Card wrapper (holds card + annotation) ── */
-.card-wrap{position:relative}
+.card-wrap{position:relative;display:flex;flex-direction:column}
+.card-wrap > .card{flex:1}
 .card-wrap:hover > .card{box-shadow:0 3px 14px rgba(0,0,0,.07);border-color:#D4DBE3}
 
 /* ── Hover annotation ── */
@@ -329,6 +330,8 @@ body{background:var(--gy1);font-family:var(--font)}
           </div>
           <div class="cq">What are employees working on?</div>
           <div class="ci">Coaching is concentrated on high-pressure leadership situations</div>
+          <div class="mb blue">76%</div>
+          <div class="ml">aligned with org priorities</div>
           <div class="focus-row">
             <span class="fb-label">Difficult conversations</span>
             <div class="fb-track"><div class="fb-fill fb-high" style="width:72%"></div></div>
