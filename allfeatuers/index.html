@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ally Connect — Partner Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bl3:#008AF8;--vi5:#5E2DD6;--gr5:#2AB34B;--or5:#F57800;--sk3:#00D4FF;
+  --gy1:#F8F8F8;--gy4:#A7AEB4;--gy5:#7A8086;--gy6:#585F66;--gy7:#343A40;--gy8:#12181E;
+  --bgr3:#F0F4FA;--bgr4:#E2EAF5;--bgr5:#C8D8EA;
+  --white:#fff;--border:#E6E9EB;
+  --text:#343A40;
+  --font:'Rubik',sans-serif;
+}
+
+/* ── Outer page ── */
+body{background:var(--gy1);font-family:var(--font)}
+.page-outer{max-width:1180px;margin:0 auto;position:relative}
+
+/* ── Shell ── */
+.shell{font-family:var(--font);background:var(--gy1);color:var(--gy7);max-width:900px;margin:0 auto;padding-bottom:40px}
+
+/* ── Topbar ── */
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center}
+.brand{display:flex;align-items:center;gap:8px;padding:12px 0;font-size:14px;font-weight:500;color:var(--gy8);text-decoration:none}
+.brand-logo{width:26px;height:26px;border-radius:6px;background:linear-gradient(to right,#008AF8 34%,#00D4FF 101%);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.brand-logo svg{width:11px;height:11px;fill:white}
+.topnav{display:flex;margin-left:auto}
+.topnav a{padding:12px 14px;font-size:12px;color:var(--gy5);text-decoration:none;border-bottom:2px solid transparent;cursor:pointer;font-family:var(--font);transition:color .15s}
+.topnav a:hover{color:var(--gy7)}
+.topnav a.active{color:var(--bl3);border-bottom-color:var(--bl3);font-weight:500}
+
+/* ── Page header ── */
+.page{padding:18px 20px}
+.ph h1{font-size:20px;font-weight:700;letter-spacing:-0.3px;color:var(--gy8);margin-bottom:3px}
+.ph-date{font-size:11px;color:var(--gy5);margin-bottom:10px}
+
+/* ── Data used row ── */
+.du-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:10px;flex-wrap:wrap}
+.du-label{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--gy4);margin-right:2px}
+.du-sep{width:1px;height:11px;background:var(--border);flex-shrink:0}
+.du-tag{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--gy6)}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
+.dot-s{background:var(--bl3)}
+.dot-v{background:var(--sk3);outline:1.5px solid #00A5DB}
+.dot-c{background:var(--or5)}
+.dot-r{background:var(--vi5)}
+.dot-b{background:var(--gr5)}
+
+/* ── Executive Summary — light blue card ── */
+.exec{
+  background:#EEF6FF;
+  border:1px solid #C5DFFB;
+  border-radius:8px;
+  padding:16px 18px;
+  margin-bottom:10px;
+  transition:box-shadow .2s;
+}
+.exec:hover{box-shadow:0 3px 12px rgba(0,138,248,.1)}
+.exec-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--bl3);margin-bottom:7px}
+.exec-text{font-size:13px;color:var(--gy7);line-height:1.65}
+
+/* ── Grid ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+
+/* ── Card ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:18px 16px 14px 16px;display:flex;flex-direction:column;min-width:0;overflow:hidden;transition:box-shadow .2s,border-color .2s}
+
+/* ── Card wrapper (holds card + annotation) ── */
+.card-wrap{position:relative}
+.card-wrap:hover > .card{box-shadow:0 3px 14px rgba(0,0,0,.07);border-color:#D4DBE3}
+
+/* ── Hover annotation ── */
+.anno{
+  position:absolute;
+  left:calc(100% + 14px);
+  top:0;
+  width:168px;
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:11px 13px;
+  box-shadow:0 3px 14px rgba(0,0,0,.08);
+  opacity:0;
+  transform:translateX(-6px);
+  transition:opacity .2s ease, transform .2s ease;
+  pointer-events:none;
+  z-index:30;
+}
+.card-wrap:hover .anno{opacity:1;transform:translateX(0)}
+.anno::before{
+  content:'';
+  position:absolute;
+  left:-5px;top:14px;
+  width:8px;height:8px;
+  background:var(--white);
+  border-left:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  transform:rotate(45deg);
+}
+/* exec annotation */
+.exec-wrap{position:relative}
+.exec-wrap:hover .anno{opacity:1;transform:translateX(0)}
+
+.anno-label{font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--gy4);margin-bottom:5px}
+.anno-q{font-size:11px;font-weight:600;color:var(--gy8);margin-bottom:6px;line-height:1.35}
+.anno-body{font-size:10px;color:var(--gy6);line-height:1.55}
+.anno-divider{height:1px;background:var(--border);margin:8px 0}
+.anno-stat{display:flex;align-items:center;gap:5px;margin-bottom:4px}
+.anno-stat:last-child{margin-bottom:0}
+.anno-pill{font-size:9px;font-weight:600;padding:1px 6px;border-radius:99px}
+.ap-green{background:#E8F5E9;color:#2E7D32}
+.ap-amber{background:#FFF8E1;color:#E65100}
+.ap-blue{background:#E3F2FD;color:#1565C0}
+.anno-stat-text{font-size:10px;color:var(--gy6)}
+
+/* ── Card header ── */
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;min-width:0}
+.slbl{font-size:8px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--gy4);flex-shrink:0}
+.ctags{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.ctag{display:flex;align-items:center;gap:3px}
+.ctag span{font-size:8px;color:var(--gy4);white-space:nowrap}
+
+/* ── Card text ── */
+.cq{font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;width:100%}
+.cq-wrap{font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.3;display:block;width:100%}
+.ci{font-size:12px;color:var(--text);line-height:1.45;margin-bottom:12px}
+
+/* ── Big metric ── */
+.mb{font-size:38px;font-weight:700;line-height:1;letter-spacing:-0.5px}
+.mb.pos{color:var(--gr5)}.mb.warn{color:var(--or5)}.mb.blue{color:var(--bl3)}
+.ml{font-size:11px;color:var(--gy5);margin-bottom:10px}
+
+/* ── Usage ── */
+.usage-main{display:flex;margin:0 0 12px;padding:10px 0;border-top:1px solid var(--bgr4);border-bottom:1px solid var(--bgr4)}
+.usage-m{flex:1;display:flex;flex-direction:column;padding:0 12px}
+.usage-m:first-child{padding-left:0}
+.usage-m+.usage-m{border-left:1px solid var(--border)}
+.uval{font-size:26px;font-weight:700;letter-spacing:-0.5px;line-height:1;color:var(--gy8)}
+.uval.pos{color:var(--gr5)}
+.ulbl{font-size:10px;color:var(--gy5);margin-top:2px}
+
+/* ── Retention bar ── */
+.kg-lbl{font-size:8px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--gy4);margin-bottom:5px}
+.ret-bar{display:flex;height:7px;border-radius:4px;overflow:hidden;gap:2px;margin-bottom:5px}
+.ret-seg{height:100%;border-radius:2px}
+.ret-legend{display:flex;gap:10px;margin-bottom:10px}
+.ret-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ret-item{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--gy5)}
+
+/* ── Warning row ── */
+.warn-row{display:flex;align-items:center;gap:5px;margin-bottom:10px}
+.warn-tri{width:13px;height:13px;flex-shrink:0}
+.wt{font-size:10px;color:var(--gy6)}
+.wb{font-size:8px;background:#EAFFEC;color:#00821D;padding:2px 6px;border-radius:99px;font-weight:600;border:1px solid #ACF9B3;white-space:nowrap}
+
+/* ── Focus bars ── */
+.focus-row{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.fb-label{font-size:11px;color:var(--gy7);width:135px;flex-shrink:0}
+.fb-track{flex:1;height:5px;background:var(--bgr4);border-radius:3px;overflow:hidden}
+.fb-fill{height:100%;border-radius:3px}
+.fb-high{background:#2196F3}.fb-mod{background:#4CAF50}.fb-dir{background:#9E9E9E}
+.fb-val{font-size:11px;color:var(--gy6);width:28px;text-align:right;flex-shrink:0}
+
+/* ── Value funnel ── */
+.funnel{display:flex;align-items:stretch;gap:0;margin:0 0 12px;height:54px}
+.funnel-step{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.funnel-pct{font-size:18px;font-weight:700;color:var(--white);line-height:1}
+.funnel-lbl{font-size:9px;color:rgba(255,255,255,.85);margin-top:2px;text-align:center;line-height:1.3}
+.funnel-a{background:var(--bl3);border-radius:6px 0 0 6px}
+.funnel-arrow{width:16px;display:flex;align-items:center;justify-content:center;background:var(--bgr3);flex-shrink:0}
+.funnel-arrow-icon{width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:8px solid var(--bl3)}
+.funnel-b{background:var(--gr5);border-radius:0 6px 6px 0}
+
+/* ── Chips ── */
+.kws{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+.kw{font-size:10px;color:var(--gy7);background:var(--bgr3);border:1px solid var(--bgr4);padding:2px 9px;border-radius:99px}
+
+/* ── Experience bullets + flag tags ── */
+.bullet-list{list-style:none;padding:0;margin-bottom:10px}
+.bullet-item{display:flex;align-items:flex-start;gap:7px;padding:5px 0;border-bottom:0.5px solid var(--bgr4);font-size:11px;color:var(--gy7);line-height:1.35}
+.bullet-item:last-child{border-bottom:none;padding-bottom:0}
+.bdot{width:4px;height:4px;border-radius:50%;background:var(--gy4);flex-shrink:0;margin-top:5px}
+.bullet-text{flex:1;display:flex;align-items:center;flex-wrap:wrap;gap:5px}
+/* Subtle light yellow — same for both flag types */
+.flag{display:inline-flex;align-items:center;gap:3px;font-size:8px;font-weight:500;padding:2px 7px;border-radius:99px;white-space:nowrap;background:#FFF8E1;color:#9A6900;border:1px solid #FFE082}
+.flag-tri{width:10px;height:10px;flex-shrink:0}
+
+/* ── Qualitative insight ── */
+.q-ins{font-size:10px;color:var(--gy5);font-style:italic;line-height:1.5;padding-top:8px;border-top:1px solid var(--bgr4);margin-top:auto;margin-bottom:6px}
+.spacer{flex:1}
+
+/* ── CTA ── */
+.cta{font-size:12px;color:var(--vi5);font-weight:500;cursor:pointer;display:block;text-decoration:none;transition:opacity .15s}
+.cta:hover{opacity:.7}
+
+/* ── Impact shifts ── */
+.shift-row{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.shift-name{font-size:10px;color:var(--gy7);width:150px;flex-shrink:0}
+.shift-track{flex:1;display:flex;align-items:center;gap:3px}
+.track-line{flex:1;height:2px;background:var(--bgr4);border-radius:1px;position:relative}
+.track-fill{position:absolute;left:0;top:0;height:100%;background:var(--gr5);border-radius:1px;opacity:.4}
+.dot-before{width:10px;height:10px;border-radius:50%;background:var(--bgr4);border:1.5px solid var(--bgr5);flex-shrink:0}
+.dot-after{width:12px;height:12px;border-radius:50%;background:var(--gr5);flex-shrink:0}
+.shift-delta{font-size:11px;font-weight:700;color:var(--gr5);width:32px;text-align:right;flex-shrink:0}
+.sig{border-left:3px solid var(--bl3);background:var(--bgr3);border-radius:0 6px 6px 0;padding:9px 12px;margin:10px 0}
+.sig-lbl{font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--bl3);margin-bottom:4px}
+.sig-text{font-size:11px;color:var(--gy6);line-height:1.5;font-style:italic}
+</style>
+</head>
+<body>
+<div class="page-outer">
+<div class="shell">
+
+  <!-- ── Topbar ── -->
+  <div class="topbar">
+    <a class="brand" href="#">
+      <div class="brand-logo"><svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.5"/></svg></div>
+      Ally Connect
+    </a>
+    <nav class="topnav">
+      <a class="active" href="#">Dashboard</a>
+      <a href="#">Profile</a>
+      <a href="#">API Docs</a>
+      <a href="#">Ally</a>
+    </nav>
+  </div>
+
+  <div class="page">
+    <div class="ph">
+      <h1>Partner Dashboard</h1>
+      <div class="ph-date">Last updated Apr 13, 2026, 3:37 PM · Randstad / RiseSmart</div>
+    </div>
+
+    <!-- DATA USED ROW -->
+    <div class="du-row">
+      <span class="du-label">Data used</span>
+      <div class="du-tag"><span class="dot dot-s"></span>Chat session</div>
+      <div class="du-sep"></div>
+      <div class="du-tag"><span class="dot dot-v"></span>Voice session</div>
+      <div class="du-sep"></div>
+      <div class="du-tag"><span class="dot dot-c"></span>Company context</div>
+      <div class="du-sep"></div>
+      <div class="du-tag"><span class="dot dot-r"></span>Roleplay</div>
+      <div class="du-sep"></div>
+      <div class="du-tag"><span class="dot dot-b"></span>Baseline</div>
+    </div>
+
+    <!-- ══ EXECUTIVE SUMMARY — blue card ══ -->
+    <div class="exec-wrap" style="position:relative;margin-bottom:10px">
+      <div class="exec">
+        <div class="exec-lbl">Executive Summary</div>
+        <div class="exec-text">Leaders are not lacking capability — they are navigating a transition from expert to leader, where the challenge is performing under pressure, not knowing what to do. Coaching is being used effectively as a just-in-time tool to prepare for real situations, and when combined with practice and baseline data, it drives measurable behavior change and leadership growth.</div>
+      </div>
+      <div class="anno" style="top:50%;transform:translateY(-50%) translateX(-6px)">
+        <div class="anno-label">Executive Summary</div>
+        <div class="anno-q">Is it working?</div>
+        <div class="anno-body">Strong signals across all 5 dimensions. Adoption is real, topics align to live challenges, and measurable improvement is visible from baseline.</div>
+        <div class="anno-divider"></div>
+        <div class="anno-stat"><span class="anno-pill ap-green">4 / 5</span><span class="anno-stat-text">dimensions healthy</span></div>
+        <div class="anno-stat"><span class="anno-pill ap-amber">1 watch</span><span class="anno-stat-text">Experience</span></div>
+      </div>
+    </div>
+
+    <!-- ══ ROW 1: USAGE + FOCUS ══ -->
+    <div class="g2">
+
+      <!-- USAGE -->
+      <div class="card-wrap">
+        <div class="card eq">
+          <div class="card-header">
+            <span class="slbl">Usage</span>
+            <div class="ctags">
+              <div class="ctag"><span class="dot dot-s"></span><span>Chat</span></div>
+              <div class="ctag"><span class="dot dot-v"></span><span>Voice</span></div>
+              <div class="ctag"><span class="dot dot-r"></span><span>Roleplay</span></div>
+            </div>
+          </div>
+          <div class="cq">Are employees using coaching consistently?</div>
+          <div class="ci">Adoption is steady, with most employees returning over time</div>
+          <div class="usage-main">
+            <div class="usage-m"><span class="uval">142</span><span class="ulbl">Active users</span></div>
+            <div class="usage-m"><span class="uval pos">68%</span><span class="ulbl">Return within 2 weeks</span></div>
+          </div>
+          <div class="kg-lbl">Engagement breakdown</div>
+          <div class="ret-bar">
+            <div class="ret-seg" style="width:68%;background:var(--gr5)"></div>
+            <div class="ret-seg" style="width:13%;background:#FFB800"></div>
+            <div class="ret-seg" style="width:19%;background:#F09595"></div>
+          </div>
+          <div class="ret-legend">
+            <div class="ret-item"><div class="ret-dot" style="background:var(--gr5)"></div>Returned 68%</div>
+            <div class="ret-item"><div class="ret-dot" style="background:#FFB800"></div>Inactive 13%</div>
+            <div class="ret-item"><div class="ret-dot" style="background:#F09595"></div>At-risk 19%</div>
+          </div>
+          <div class="warn-row">
+            <svg class="warn-tri" viewBox="0 0 16 16" fill="none"><path d="M8 2L14.5 13.5H1.5L8 2Z" fill="#FFD54F" stroke="#CC8C00" stroke-width="1"/><text x="8" y="12" text-anchor="middle" font-size="7" font-weight="700" fill="#7A5000">!</text></svg>
+            <span class="wt">Some users engage only once and do not return</span>
+            <span class="wb">2 actions</span>
+          </div>
+          <div class="spacer"></div>
+          <div class="q-ins">Return rate is strongest among users who arrive with a concrete challenge — early goal clarity is the clearest predictor of sustained engagement.</div>
+          <a class="cta" href="#">View engagement patterns →</a>
+        </div>
+        <div class="anno">
+          <div class="anno-label">Usage</div>
+          <div class="anno-q">Do they use it?<br>Do they like it?</div>
+          <div class="anno-body">68% voluntary return signals genuine utility. The 19% at-risk and single-session cohort is the watch area.</div>
+          <div class="anno-divider"></div>
+          <div class="anno-stat"><span class="anno-pill ap-green">✓ Use it</span><span class="anno-stat-text">68% return</span></div>
+          <div class="anno-stat"><span class="anno-pill ap-amber">Watch</span><span class="anno-stat-text">19% at-risk</span></div>
+        </div>
+      </div>
+
+      <!-- FOCUS -->
+      <div class="card-wrap">
+        <div class="card eq">
+          <div class="card-header">
+            <span class="slbl">Focus</span>
+            <div class="ctags">
+              <div class="ctag"><span class="dot dot-s"></span><span>Chat</span></div>
+              <div class="ctag"><span class="dot dot-v"></span><span>Voice</span></div>
+              <div class="ctag"><span class="dot dot-c"></span><span>Context</span></div>
+              <div class="ctag"><span class="dot dot-b"></span><span>Baseline</span></div>
+            </div>
+          </div>
+          <div class="cq">What are employees working on?</div>
+          <div class="ci">Coaching is concentrated on high-pressure leadership situations</div>
+          <div class="focus-row">
+            <span class="fb-label">Difficult conversations</span>
+            <div class="fb-track"><div class="fb-fill fb-high" style="width:72%"></div></div>
+            <span class="fb-val">38%</span>
+          </div>
+          <div class="focus-row">
+            <span class="fb-label">Upward influence</span>
+            <div class="fb-track"><div class="fb-fill fb-high" style="width:59%"></div></div>
+            <span class="fb-val">31%</span>
+          </div>
+          <div class="focus-row" style="margin-bottom:10px">
+            <span class="fb-label">Accountability moments</span>
+            <div class="fb-track"><div class="fb-fill fb-mod" style="width:46%"></div></div>
+            <span class="fb-val">24%</span>
+          </div>
+          <div class="warn-row">
+            <svg class="warn-tri" viewBox="0 0 16 16" fill="none"><path d="M8 2L14.5 13.5H1.5L8 2Z" fill="#FFD54F" stroke="#CC8C00" stroke-width="1"/><text x="8" y="12" text-anchor="middle" font-size="7" font-weight="700" fill="#7A5000">!</text></svg>
+            <span class="wt">Some focus diverges from org priority</span>
+            <span class="wb">3 actions</span>
+          </div>
+          <div class="spacer"></div>
+          <div class="q-ins">Leaders are gravitating toward topics with immediate relational stakes — these are live challenges being brought to coaching, not abstract development goals.</div>
+          <a class="cta" href="#">View focus &amp; alignment →</a>
+        </div>
+        <div class="anno">
+          <div class="anno-label">Focus</div>
+          <div class="anno-q">Do they use it?<br>Is it working?</div>
+          <div class="anno-body">76% alignment with org priorities. Topics reflect real leadership pressure. Some divergence worth watching.</div>
+          <div class="anno-divider"></div>
+          <div class="anno-stat"><span class="anno-pill ap-green">✓ 76%</span><span class="anno-stat-text">org-aligned</span></div>
+          <div class="anno-stat"><span class="anno-pill ap-amber">Watch</span><span class="anno-stat-text">some divergence</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ROW 2: VALUE + EXPERIENCE ══ -->
+    <div class="g2">
+
+      <!-- VALUE -->
+      <div class="card-wrap">
+        <div class="card eq">
+          <div class="card-header">
+            <span class="slbl">Value</span>
+            <div class="ctags">
+              <div class="ctag"><span class="dot dot-s"></span><span>Chat</span></div>
+              <div class="ctag"><span class="dot dot-v"></span><span>Voice</span></div>
+              <div class="ctag"><span class="dot dot-r"></span><span>Roleplay</span></div>
+            </div>
+          </div>
+          <div class="cq-wrap">Is coaching helping employees move forward?</div>
+          <div class="ci">Coaching converts challenges into actionable plans and practice</div>
+          <div class="funnel">
+            <div class="funnel-step funnel-a">
+              <div class="funnel-pct">61%</div>
+              <div class="funnel-lbl">left with a clear<br>action plan</div>
+            </div>
+            <div class="funnel-arrow"><div class="funnel-arrow-icon"></div></div>
+            <div class="funnel-step funnel-b">
+              <div class="funnel-pct">67%</div>
+              <div class="funnel-lbl">closed gap through<br>roleplay practice</div>
+            </div>
+          </div>
+          <div class="kg-lbl">Key actions</div>
+          <div class="kws">
+            <span class="kw">Prepare difficult conversations</span>
+            <span class="kw">Set clear expectations</span>
+            <span class="kw">Address performance issues</span>
+          </div>
+          <div class="spacer"></div>
+          <div class="q-ins">Action orientation and return rate are correlated — users who leave with a plan are significantly more likely to re-engage and follow through in roleplay.</div>
+          <a class="cta" href="#">View coaching effectiveness →</a>
+        </div>
+        <div class="anno">
+          <div class="anno-label">Value</div>
+          <div class="anno-q">Is it working?</div>
+          <div class="anno-body">Coaching moves people to action. 61% leave with a plan; 67% of those practice through roleplay.</div>
+          <div class="anno-divider"></div>
+          <div class="anno-stat"><span class="anno-pill ap-green">✓ Yes</span><span class="anno-stat-text">61% → action plan</span></div>
+          <div class="anno-stat"><span class="anno-pill ap-green">✓ Deep</span><span class="anno-stat-text">67% use roleplay</span></div>
+        </div>
+      </div>
+
+      <!-- EXPERIENCE -->
+      <div class="card-wrap">
+        <div class="card eq">
+          <div class="card-header">
+            <span class="slbl">Experience</span>
+            <div class="ctags">
+              <div class="ctag"><span class="dot dot-s"></span><span>Chat</span></div>
+              <div class="ctag"><span class="dot dot-v"></span><span>Voice</span></div>
+              <div class="ctag"><span class="dot dot-c"></span><span>Context</span></div>
+              <div class="ctag"><span class="dot dot-b"></span><span>Baseline</span></div>
+            </div>
+          </div>
+          <div class="cq">What challenges are they bringing to Ally?</div>
+          <div class="ci">Stuckness clusters around topics the company flags as strategic priorities</div>
+          <div class="mb blue">24%</div>
+          <div class="ml">stuck on company-flagged priority topics</div>
+          <div class="kg-lbl">Key challenges</div>
+          <ul class="bullet-list">
+            <li class="bullet-item">
+              <div class="bdot"></div>
+              <div class="bullet-text">Difficult conversations
+                <span class="flag">
+                  <svg class="flag-tri" viewBox="0 0 16 16" fill="none"><path d="M8 2L14.5 13.5H1.5L8 2Z" fill="#CC8C00" stroke="#5C3A00" stroke-width="1"/><text x="8" y="12" text-anchor="middle" font-size="7" font-weight="700" fill="#fff">!</text></svg>
+                  Org priority
+                </span>
+              </div>
+            </li>
+            <li class="bullet-item">
+              <div class="bdot"></div>
+              <div class="bullet-text">Time pressure
+                <span class="flag">
+                  <svg class="flag-tri" viewBox="0 0 16 16" fill="none"><path d="M8 2L14.5 13.5H1.5L8 2Z" fill="#CC8C00" stroke="#5C3A00" stroke-width="1"/><text x="8" y="12" text-anchor="middle" font-size="7" font-weight="700" fill="#fff">!</text></svg>
+                  Strength with a gap
+                </span>
+              </div>
+            </li>
+            <li class="bullet-item">
+              <div class="bdot"></div>
+              <div class="bullet-text">Authenticity tension</div>
+            </li>
+          </ul>
+          <div class="spacer"></div>
+          <div class="q-ins">Employees are underweighting topics their company considers critical — the gap isn't just individual, it's organizational and worth surfacing to the client.</div>
+          <a class="cta" href="#">Explore experience drivers →</a>
+        </div>
+        <div class="anno">
+          <div class="anno-label">Experience</div>
+          <div class="anno-q">Is it working?</div>
+          <div class="anno-body">Coaching surfaces the right challenges, but 24% remain stuck. The org-level gap is worth flagging to the client.</div>
+          <div class="anno-divider"></div>
+          <div class="anno-stat"><span class="anno-pill ap-green">✓ Relevant</span><span class="anno-stat-text">right topics surfaced</span></div>
+          <div class="anno-stat"><span class="anno-pill ap-amber">Partial</span><span class="anno-stat-text">24% still stuck</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ IMPACT ══ -->
+    <div class="card-wrap">
+      <div class="card">
+        <div class="card-header">
+          <span class="slbl">Impact</span>
+          <div class="ctags">
+            <div class="ctag"><span class="dot dot-s"></span><span>Chat</span></div>
+            <div class="ctag"><span class="dot dot-v"></span><span>Voice</span></div>
+            <div class="ctag"><span class="dot dot-b"></span><span>Baseline</span></div>
+            <div class="ctag"><span class="dot dot-r"></span><span>Roleplay</span></div>
+          </div>
+        </div>
+        <div class="cq-wrap">How are employees improving over time?</div>
+        <div class="ci">Employees show measurable improvement in key leadership competencies</div>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start;margin-bottom:10px">
+          <div>
+            <div class="mb pos">+12%</div>
+            <div class="ml">avg improvement<br>from baseline</div>
+          </div>
+          <div style="padding-top:4px">
+            <div class="kg-lbl" style="margin-bottom:8px">Key shifts — baseline → now</div>
+            <div class="shift-row">
+              <span class="shift-name">Leadership presence</span>
+              <div class="shift-track"><div class="dot-before"></div><div class="track-line"><div class="track-fill" style="width:75%"></div></div><div class="dot-after"></div></div>
+              <span class="shift-delta">+18%</span>
+            </div>
+            <div class="shift-row">
+              <span class="shift-name">Proactive conversations</span>
+              <div class="shift-track"><div class="dot-before"></div><div class="track-line"><div class="track-fill" style="width:55%"></div></div><div class="dot-after"></div></div>
+              <span class="shift-delta">+12%</span>
+            </div>
+            <div class="shift-row" style="margin-bottom:0">
+              <span class="shift-name">Clearer prioritization</span>
+              <div class="shift-track"><div class="dot-before"></div><div class="track-line"><div class="track-fill" style="width:40%"></div></div><div class="dot-after"></div></div>
+              <span class="shift-delta">+10%</span>
+            </div>
+          </div>
+        </div>
+        <div class="sig">
+          <div class="sig-lbl">Early Signs of Growth</div>
+          <div class="sig-text">The program appears to be functioning as a just-in-time leadership capability builder — coaching is being engaged in proximity to real events, not as a theoretical exercise. This is a meaningful program quality signal worth highlighting to the client.</div>
+        </div>
+        <a class="cta" href="#">View growth over time →</a>
+      </div>
+      <div class="anno">
+        <div class="anno-label">Impact</div>
+        <div class="anno-q">Is it working?</div>
+        <div class="anno-body">Yes — measurable. +12% avg improvement from baseline. Leadership presence leads at +18%. Growth reflects real-event proximity.</div>
+        <div class="anno-divider"></div>
+        <div class="anno-stat"><span class="anno-pill ap-green">✓ Yes</span><span class="anno-stat-text">+12% avg baseline</span></div>
+        <div class="anno-stat"><span class="anno-pill ap-green">+18%</span><span class="anno-stat-text">leadership presence</span></div>
+      </div>
+    </div>
+
+  </div><!-- /page -->
+</div><!-- /shell -->
+</div><!-- /page-outer -->
+
+<script>
+// Equalize heights for all 4 metric cards
+document.addEventListener('DOMContentLoaded', function () {
+  var cards = document.querySelectorAll('.card.eq');
+  var maxH = 0;
+  cards.forEach(function (c) {
+    c.style.minHeight = '';
+    if (c.offsetHeight > maxH) maxH = c.offsetHeight;
+  });
+  cards.forEach(function (c) { c.style.minHeight = maxH + 'px'; });
+});
+</script>
+</body>
+</html>
