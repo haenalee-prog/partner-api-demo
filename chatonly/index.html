@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ally Connect — Partner Dashboard (Basic)</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bl3:#008AF8;--vi5:#5E2DD6;--gr5:#2AB34B;--or5:#F57800;--sk3:#00D4FF;
+  --gy1:#F8F8F8;--gy4:#A7AEB4;--gy5:#7A8086;--gy6:#585F66;--gy7:#343A40;--gy8:#12181E;
+  --bgr3:#F0F4FA;--bgr4:#E2EAF5;--bgr5:#C8D8EA;
+  --white:#fff;--border:#E6E9EB;
+  --text:#343A40;
+  --font:'Rubik',sans-serif;
+}
+
+/* ── Outer page ── */
+body{background:var(--gy1);font-family:var(--font)}
+.page-outer{max-width:1180px;margin:0 auto;position:relative}
+
+/* ── Shell ── */
+.shell{font-family:var(--font);background:var(--gy1);color:var(--gy7);max-width:900px;margin:0 auto;padding-bottom:40px}
+
+/* ── Topbar ── */
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center}
+.brand{display:flex;align-items:center;gap:8px;padding:12px 0;font-size:14px;font-weight:500;color:var(--gy8);text-decoration:none}
+.brand-logo{width:26px;height:26px;border-radius:6px;background:linear-gradient(to right,#008AF8 34%,#00D4FF 101%);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.brand-logo svg{width:11px;height:11px;fill:white}
+.topnav{display:flex;margin-left:auto}
+.topnav a{padding:12px 14px;font-size:12px;color:var(--gy5);text-decoration:none;border-bottom:2px solid transparent;cursor:pointer;font-family:var(--font);transition:color .15s}
+.topnav a:hover{color:var(--gy7)}
+.topnav a.active{color:var(--bl3);border-bottom-color:var(--bl3);font-weight:500}
+
+/* ── Page header ── */
+.page{padding:18px 20px}
+.ph h1{font-size:20px;font-weight:700;letter-spacing:-0.3px;color:var(--gy8);margin-bottom:3px}
+.ph-date{font-size:11px;color:var(--gy5);margin-bottom:10px}
+
+/* ── Data used row ── */
+.du-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:10px;flex-wrap:wrap}
+.du-label{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--gy4);margin-right:2px}
+.du-tag{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--gy6)}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
+.dot-s{background:var(--bl3)}
+
+/* ── Executive Summary — light blue card ── */
+.exec{
+  background:#EEF6FF;
+  border:1px solid #C5DFFB;
+  border-radius:8px;
+  padding:16px 18px;
+  margin-bottom:10px;
+  transition:box-shadow .2s;
+}
+.exec:hover{box-shadow:0 3px 12px rgba(0,138,248,.1)}
+.exec-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--bl3);margin-bottom:7px}
+.exec-text{font-size:13px;color:var(--gy7);line-height:1.65}
+
+/* ── Grid ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+
+/* ── Card ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:18px 16px 14px 16px;display:flex;flex-direction:column;min-width:0;overflow:hidden;transition:box-shadow .2s,border-color .2s}
+
+/* ── Card wrapper ── */
+.card-wrap{position:relative;display:flex;flex-direction:column}
+.card-wrap > .card{flex:1}
+.card-wrap:hover > .card{box-shadow:0 3px 14px rgba(0,0,0,.07);border-color:#D4DBE3}
+
+/* ── Hover annotation ── */
+.anno{
+  position:absolute;
+  left:calc(100% + 14px);
+  top:0;
+  width:168px;
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:11px 13px;
+  box-shadow:0 3px 14px rgba(0,0,0,.08);
+  opacity:0;
+  transform:translateX(-6px);
+  transition:opacity .2s ease, transform .2s ease;
+  pointer-events:none;
+  z-index:30;
+}
+.card-wrap:hover .anno{opacity:1;transform:translateX(0)}
+.anno::before{
+  content:'';
+  position:absolute;
+  left:-5px;top:14px;
+  width:8px;height:8px;
+  background:var(--white);
+  border-left:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  transform:rotate(45deg);
+}
+/* exec annotation */
+.exec-wrap{position:relative}
+.exec-wrap:hover .anno{opacity:1;transform:translateX(0)}
+
+.anno-label{font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--gy4);margin-bottom:5px}
+.anno-q{font-size:11px;font-weight:600;color:var(--gy8);margin-bottom:6px;line-height:1.35}
+.anno-body{font-size:10px;color:var(--gy6);line-height:1.55}
+.anno-divider{height:1px;background:var(--border);margin:8px 0}
+.anno-stat{display:flex;align-items:center;gap:5px;margin-bottom:4px}
+.anno-stat:last-child{margin-bottom:0}
+.anno-pill{font-size:9px;font-weight:600;padding:1px 6px;border-radius:99px}
+.ap-green{background:#E8F5E9;color:#2E7D32}
+.ap-amber{background:#FFF8E1;color:#E65100}
+.ap-blue{background:#E3F2FD;color:#1565C0}
+.anno-stat-text{font-size:10px;color:var(--gy6)}
+
+/* ── Card header ── */
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;min-width:0}
+.slbl{font-size:8px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--gy4);flex-shrink:0}
+.ctags{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.ctag{display:flex;align-items:center;gap:3px}
+.ctag span{font-size:8px;color:var(--gy4);white-space:nowrap}
+
+/* ── Card text ── */
+.cq{font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;width:100%}
+.cq-wrap{font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.3;display:block;width:100%}
+.ci{font-size:12px;color:var(--text);line-height:1.45;margin-bottom:12px}
+
+/* ── Big metric ── */
+.mb{font-size:38px;font-weight:700;line-height:1;letter-spacing:-0.5px}
+.mb.pos{color:var(--gr5)}.mb.warn{color:var(--or5)}.mb.blue{color:var(--bl3)}
+.ml{font-size:11px;color:var(--gy5);margin-bottom:10px}
+
+/* ── Usage ── */
+.usage-main{display:flex;margin:0 0 12px;padding:10px 0;border-top:1px solid var(--bgr4);border-bottom:1px solid var(--bgr4)}
+.usage-m{flex:1;display:flex;flex-direction:column;padding:0 12px}
+.usage-m:first-child{padding-left:0}
+.usage-m+.usage-m{border-left:1px solid var(--border)}
+.uval{font-size:26px;font-weight:700;letter-spacing:-0.5px;line-height:1;color:var(--gy8)}
+.uval.pos{color:var(--gr5)}
+.ulbl{font-size:10px;color:var(--gy5);margin-top:2px}
+
+/* ── Retention bar ── */
+.kg-lbl{font-size:8px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--gy4);margin-bottom:5px}
+.ret-bar{display:flex;height:7px;border-radius:4px;overflow:hidden;gap:2px;margin-bottom:5px}
+.ret-seg{height:100%;border-radius:2px}
+.ret-legend{display:flex;gap:10px;margin-bottom:10px}
+.ret-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ret-item{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--gy5)}
+
+/* ── Warning row ── */
+.warn-row{display:flex;align-items:center;gap:5px;margin-bottom:10px}
+.warn-tri{width:13px;height:13px;flex-shrink:0}
+.wt{font-size:10px;color:var(--gy6)}
+.wb{font-size:8px;background:#EAFFEC;color:#00821D;padding:2px 6px;border-radius:99px;font-weight:600;border:1px solid #ACF9B3;white-space:nowrap}
+
+/* ── Focus bars ── */
+.focus-row{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.fb-label{font-size:11px;color:var(--gy7);width:128px;flex-shrink:0}
+.fb-track{flex:1;height:5px;background:var(--bgr4);border-radius:3px;overflow:hidden}
+.fb-fill{height:100%;border-radius:3px}
+.fb-high{background:#2196F3}.fb-mod{background:#4CAF50}.fb-dir{background:#9E9E9E}
+.fb-val{font-size:11px;color:var(--gy6);width:28px;text-align:right;flex-shrink:0}
+.fpill{font-size:9px;font-weight:600;padding:1px 6px;border-radius:99px;flex-shrink:0}
+.fp-high{background:#E3F2FD;color:#1565C0}
+.fp-mod{background:#E8F5E9;color:#2E7D32}
+.fp-dir{background:#F5F5F5;color:#757575}
+
+/* ── Chips ── */
+.kws{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+.kw{font-size:10px;color:var(--gy7);background:var(--bgr3);border:1px solid var(--bgr4);padding:2px 9px;border-radius:99px}
+
+/* ── Qualitative insight ── */
+.q-ins{font-size:10px;color:var(--gy5);font-style:italic;line-height:1.5;padding-top:8px;border-top:1px solid var(--bgr4);margin-top:auto;margin-bottom:6px}
+.spacer{flex:1}
+
+/* ── CTA ── */
+.cta{font-size:12px;color:var(--vi5);font-weight:500;cursor:pointer;display:block;text-decoration:none;transition:opacity .15s}
+.cta:hover{opacity:.7}
+
+/* ── Growth grid (Impact — basic) ── */
+.growth-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px}
+.growth-card{background:var(--bgr3);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.gc-title{font-size:12px;font-weight:500;color:var(--gy8);line-height:1.35}
+.gc-desc{font-size:11px;color:var(--gy6);line-height:1.45}
+
+/* ── Qualitative notice (Impact — replaces sig block) ── */
+.qual-notice{border-left:3px solid #C5DFFB;background:#EEF6FF;border-radius:0 6px 6px 0;padding:9px 12px;margin:10px 0}
+.qn-lbl{font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--bl3);margin-bottom:4px}
+.qn-text{font-size:11px;color:var(--gy6);line-height:1.5;font-style:italic}
+</style>
+</head>
+<body>
+<div class="page-outer">
+<div class="shell">
+
+  <!-- ── Topbar ── -->
+  <div class="topbar">
+    <a class="brand" href="#">
+      <div class="brand-logo"><svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.5"/></svg></div>
+      Ally Connect
+    </a>
+    <nav class="topnav">
+      <a class="active" href="#">Dashboard</a>
+      <a href="#">Profile</a>
+      <a href="#">API Docs</a>
+      <a href="#">Ally</a>
+    </nav>
+  </div>
+
+  <div class="page">
+    <div class="ph">
+      <h1>Partner Dashboard</h1>
+      <div class="ph-date">Last updated Apr 13, 2026, 3:37 PM · Randstad / RiseSmart</div>
+    </div>
+
+    <!-- DATA USED ROW — Chat session only -->
+    <div class="du-row">
+      <span class="du-label">Data used</span>
+      <div class="du-tag"><span class="dot dot-s"></span>Chat session</div>
+    </div>
+
+    <!-- ══ ROW 1: USAGE + FOCUS ══ -->
+    <div class="g2">
+
+      <!-- USAGE -->
+      <div class="card-wrap">
+        <div class="card eq">
+          <div class="card-header">
+            <span class="slbl">Usage</span>
+          </div>
+          <div class="cq">Are employees using coaching consistently?</div>
+          <div class="ci">Adoption is steady, with most employees returning over time</div>
+          <div class="usage-main">
+            <div class="usage-m"><span class="uval">142</span><span class="ulbl">Active users</span></div>
+            <div class="usage-m"><span class="uval pos">68%</span><span class="ulbl">Return within 2 weeks</span></div>
+          </div>
+          <div class="kg-lbl">Engagement breakdown</div>
+          <div class="ret-bar">
+            <div class="ret-seg" style="width:68%;background:var(--gr5)"></div>
+            <div class="ret-seg" style="width:13%;background:#FFB800"></div>
+            <div class="ret-seg" style="width:19%;background:#F09595"></div>
+          </div>
+          <div class="ret-legend">
+            <div class="ret-item"><div class="ret-dot" style="background:var(--gr5)"></div>Returned 68%</div>
+            <div class="ret-item"><div class="ret-dot" style="background:#FFB800"></div>Inactive 13%</div>
+            <div class="ret-item"><div class="ret-dot" style="background:#F09595"></div>At-risk 19%</div>
+          </div>
+          <a class="cta" href="#">View engagement patterns →</a>
+        </div>
+        <div class="anno">
+          <div class="anno-label">Usage</div>
+          <div class="anno-q">Do they use it?<br>Do they like it?</div>
+          <div class="anno-body">68% voluntary return signals genuine utility. The 19% at-risk and single-session cohort is the watch area.</div>
+          <div class="anno-divider"></div>
+          <div class="anno-stat"><span class="anno-pill ap-green">✓ Use it</span><span class="anno-stat-text">68% return</span></div>
+          <div class="anno-stat"><span class="anno-pill ap-amber">Watch</span><span class="anno-stat-text">19% at-risk</span></div>
+        </div>
+      </div>
+
+      <!-- FOCUS -->
+      <div class="card-wrap">
+        <div class="card eq">
+          <div class="card-header">
+            <span class="slbl">Focus</span>
+          </div>
+          <div class="cq">What are employees working on?</div>
+          <div class="ci">Coaching is concentrated on recurring leadership and interpersonal challenges</div>
+          <div class="focus-row">
+            <span class="fb-label">Navigating transitions</span>
+            <div class="fb-track"><div class="fb-fill fb-high" style="width:72%"></div></div>
+            <span class="fb-val">38%</span>
+            <span class="fpill fp-high">high</span>
+          </div>
+          <div class="focus-row">
+            <span class="fb-label">Communicating upward</span>
+            <div class="fb-track"><div class="fb-fill fb-high" style="width:59%"></div></div>
+            <span class="fb-val">31%</span>
+            <span class="fpill fp-high">high</span>
+          </div>
+          <div class="focus-row">
+            <span class="fb-label">Boundaries &amp; workload</span>
+            <div class="fb-track"><div class="fb-fill fb-mod" style="width:46%"></div></div>
+            <span class="fb-val">24%</span>
+            <span class="fpill fp-mod">mod</span>
+          </div>
+          <div class="focus-row">
+            <span class="fb-label">Decision confidence</span>
+            <div class="fb-track"><div class="fb-fill fb-mod" style="width:37%"></div></div>
+            <span class="fb-val">19%</span>
+            <span class="fpill fp-mod">mod</span>
+          </div>
+          <div class="focus-row" style="margin-bottom:10px">
+            <span class="fb-label">Peer collaboration</span>
+            <div class="fb-track"><div class="fb-fill fb-dir" style="width:23%"></div></div>
+            <span class="fb-val">12%</span>
+            <span class="fpill fp-dir">dir</span>
+          </div>
+          <a class="cta" href="#">View all themes →</a>
+        </div>
+        <div class="anno">
+          <div class="anno-label">Focus</div>
+          <div class="anno-q">Do they use it?</div>
+          <div class="anno-body">Topics reflect real leadership pressure. Without org context data, alignment to company priorities cannot be confirmed.</div>
+          <div class="anno-divider"></div>
+          <div class="anno-stat"><span class="anno-pill ap-green">✓ Real topics</span><span class="anno-stat-text">live challenges</span></div>
+          <div class="anno-stat"><span class="anno-pill ap-blue">No context</span><span class="anno-stat-text">alignment unknown</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ROW 2: VALUE + EXPERIENCE ══ -->
+    <div class="g2">
+
+      <!-- VALUE -->
+      <div class="card-wrap">
+        <div class="card eq">
+          <div class="card-header">
+            <span class="slbl">Value</span>
+          </div>
+          <div class="cq-wrap">Is coaching helping employees move forward?</div>
+          <div class="ci">Coaching converts challenges into actionable plans</div>
+          <div class="mb pos">61%</div>
+          <div class="ml">leave with a clear action plan</div>
+          <div class="kg-lbl">Key actions</div>
+          <div class="kws">
+            <span class="kw">Prepare difficult conversations</span>
+            <span class="kw">Set clear expectations</span>
+            <span class="kw">Address performance issues</span>
+          </div>
+          <a class="cta" href="#">View coaching effectiveness →</a>
+        </div>
+        <div class="anno">
+          <div class="anno-label">Value</div>
+          <div class="anno-q">Is it working?</div>
+          <div class="anno-body">61% of sessions close with a clear plan — a strong signal of actionable coaching. Practice through roleplay is not available in this tier.</div>
+          <div class="anno-divider"></div>
+          <div class="anno-stat"><span class="anno-pill ap-green">✓ Yes</span><span class="anno-stat-text">61% → action plan</span></div>
+          <div class="anno-stat"><span class="anno-pill ap-blue">Upgrade</span><span class="anno-stat-text">add roleplay data</span></div>
+        </div>
+      </div>
+
+      <!-- EXPERIENCE -->
+      <div class="card-wrap">
+        <div class="card eq">
+          <div class="card-header">
+            <span class="slbl">Experience</span>
+          </div>
+          <div class="cq">What challenges are they bringing to Ally?</div>
+          <div class="ci">A subset of employees shows no forward movement despite recurring sessions</div>
+          <div class="mb blue">24%</div>
+          <div class="ml">show no forward movement</div>
+          <div class="kg-lbl">Key challenges</div>
+          <div class="kws">
+            <span class="kw">Difficult conversations</span>
+            <span class="kw">Time pressure</span>
+            <span class="kw">Authenticity tension</span>
+          </div>
+          <a class="cta" href="#">Explore experience drivers →</a>
+        </div>
+        <div class="anno">
+          <div class="anno-label">Experience</div>
+          <div class="anno-q">Is it working?</div>
+          <div class="anno-body">Coaching surfaces the right challenges, but 24% show no movement. Org-priority alignment cannot be confirmed without context data.</div>
+          <div class="anno-divider"></div>
+          <div class="anno-stat"><span class="anno-pill ap-green">✓ Relevant</span><span class="anno-stat-text">right topics surfaced</span></div>
+          <div class="anno-stat"><span class="anno-pill ap-amber">Partial</span><span class="anno-stat-text">24% no movement</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ IMPACT ══ -->
+    <div class="card-wrap">
+      <div class="card">
+        <div class="card-header">
+          <span class="slbl">Impact</span>
+        </div>
+        <div class="cq-wrap">How are employees improving over time?</div>
+        <div class="ci" style="margin-bottom:14px">Qualitative signals from session content suggest meaningful progress in how leaders approach challenges</div>
+        <div class="growth-grid">
+          <div class="growth-card">
+            <div class="gc-title">From reaction to ownership</div>
+            <div class="gc-desc">Leaders reframe frustrating situations as leadership responsibility rather than external problems</div>
+          </div>
+          <div class="growth-card">
+            <div class="gc-title">From overwhelm to clarity</div>
+            <div class="gc-desc">Participants move from feeling pulled in all directions to prioritizing across self, tasks, and people</div>
+          </div>
+          <div class="growth-card">
+            <div class="gc-title">Tone shapes outcomes</div>
+            <div class="gc-desc">Growing awareness that how something is said — framing, pacing, clarity — shapes how feedback lands</div>
+          </div>
+        </div>
+        <a class="cta" href="#">View growth over time →</a>
+      </div>
+      <div class="anno">
+        <div class="anno-label">Impact</div>
+        <div class="anno-q">Is it working?</div>
+        <div class="anno-body">Qualitative signs of growth are visible. Measurable baseline shift requires voice, roleplay, and baseline data from the premium tier.</div>
+        <div class="anno-divider"></div>
+        <div class="anno-stat"><span class="anno-pill ap-green">✓ Signals</span><span class="anno-stat-text">qualitative growth</span></div>
+        <div class="anno-stat"><span class="anno-pill ap-blue">Upgrade</span><span class="anno-stat-text">for measured impact</span></div>
+      </div>
+    </div>
+
+  </div><!-- /page -->
+</div><!-- /shell -->
+</div><!-- /page-outer -->
+
+<script>
+// Equalize heights for all 4 metric cards
+document.addEventListener('DOMContentLoaded', function () {
+  var cards = document.querySelectorAll('.card.eq');
+  var maxH = 0;
+  cards.forEach(function (c) {
+    c.style.minHeight = '';
+    if (c.offsetHeight > maxH) maxH = c.offsetHeight;
+  });
+  cards.forEach(function (c) { c.style.minHeight = maxH + 'px'; });
+});
+</script>
+</body>
+</html>
